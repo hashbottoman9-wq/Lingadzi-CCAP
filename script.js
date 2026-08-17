@@ -1,20 +1,15 @@
-const buttons = document.querySelectorAll('.cat-btn');
-const photos = document.querySelectorAll('.photo-card');
+const gate = document.getElementById('gate');
+const albumContent = document.getElementById('album-content');
+const enterBtn = document.getElementById('gate-enter');
+const emailInput = document.getElementById('gate-email');
 
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // update active button style
-    buttons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const category = btn.dataset.category;
-
-    photos.forEach(photo => {
-      if (category === 'all' || photo.dataset.category === category) {
-        photo.classList.remove('hidden');
-      } else {
-        photo.classList.add('hidden');
-      }
-    });
+if (enterBtn) {
+  enterBtn.addEventListener('click', () => {
+    if (!emailInput.value || !emailInput.value.includes('@')) {
+      emailInput.style.borderColor = 'red';
+      return;
+    }
+    gate.style.display = 'none';
+    albumContent.classList.remove('hidden');
   });
-});
+}
