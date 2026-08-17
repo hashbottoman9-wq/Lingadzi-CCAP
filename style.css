@@ -13,6 +13,7 @@ body {
 .site-header {
   text-align: center;
   padding: 50px 20px 30px;
+  position: relative;
 }
 
 .logo-img {
@@ -39,36 +40,64 @@ body {
   text-transform: uppercase;
 }
 
-.category-nav {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding: 20px 10px;
-  border-bottom: 1px solid #222;
-}
-
-.cat-btn {
-  background: none;
-  border: 1px solid #444;
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
   color: #ccc;
-  padding: 8px 18px;
-  font-size: 0.8rem;
+  text-decoration: none;
+  font-size: 0.85rem;
   letter-spacing: 1px;
+}
+
+.back-link:hover {
+  color: #fff;
+}
+
+/* Collection cards on homepage */
+.collections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
+
+.collection-card {
+  display: block;
+  text-decoration: none;
+  color: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.collection-card:hover {
+  transform: translateY(-4px);
+}
+
+.collection-card img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.collection-card h2 {
+  margin-top: 14px;
+  font-size: 1rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.25s ease;
+  text-align: center;
 }
 
-.cat-btn:hover,
-.cat-btn.active {
-  background: #eee;
-  color: #111;
-  border-color: #eee;
+.collection-date {
+  margin-top: 4px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  letter-spacing: 1px;
 }
 
-/* Fixed layout: proper responsive grid instead of columns,
-   so there's no empty trailing space */
+/* Album detail page photo grid */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -91,10 +120,6 @@ body {
 
 .photo-card:hover img {
   transform: scale(1.04);
-}
-
-.photo-card.hidden {
-  display: none;
 }
 
 .site-footer {
