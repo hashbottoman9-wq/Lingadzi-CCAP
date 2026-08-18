@@ -15,6 +15,14 @@ if (enterBtn) {
   });
 }
 
+// ---- Helper: build photo paths from just the IMG numbers ----
+// Example: buildPaths("CHURCH MEMBERS", [6439, 6442, 6452]) becomes
+// ["photos/CHURCH MEMBERS/IMG_6439.JPG", "photos/CHURCH MEMBERS/IMG_6442.JPG", ...]
+function buildPaths(folder, numbers, ext) {
+  ext = ext || 'JPG';
+  return numbers.map(n => `photos/${folder}/IMG_${n}.${ext}`);
+}
+
 // ---- Watermarked download ----
 function downloadWithWatermark(imgElement, filename) {
   const canvas = document.createElement('canvas');
@@ -49,24 +57,22 @@ function downloadWithWatermark(imgElement, filename) {
 }
 
 // ---- Sub-folder tabs + gallery builder ----
-// Call this from each album page, passing its own sub-folder data.
 function renderAlbum(subfolders) {
   const tabNav = document.getElementById('subfolder-nav');
   const gallery = document.getElementById('gallery');
 
   function showSubfolder(index) {
-    // update active tab
     tabNav.querySelectorAll('.cat-btn').forEach((btn, i) => {
       btn.classList.toggle('active', i === index);
     });
 
-    // clear and rebuild gallery
     gallery.innerHTML = '';
     subfolders[index].photos.forEach((src, i) => {
       const card = document.createElement('div');
       card.className = 'photo-card';
 
       const img = document.createElement('img');
+      img.loading = 'lazy';
       img.src = src;
       img.alt = subfolders[index].name + ' photo ' + (i + 1);
       card.appendChild(img);
@@ -83,7 +89,6 @@ function renderAlbum(subfolders) {
     });
   }
 
-  // build tab buttons
   subfolders.forEach((folder, index) => {
     const btn = document.createElement('button');
     btn.className = 'cat-btn';
@@ -92,5 +97,5 @@ function renderAlbum(subfolders) {
     tabNav.appendChild(btn);
   });
 
-  showSubfolder(0); // show first sub-folder by default
+  showSubfolder(0);
 }
