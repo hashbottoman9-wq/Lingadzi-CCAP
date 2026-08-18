@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHURCH SERVICES — Lingadzi CCAP Media</title>
+<title>Church Services — Lingadzi CCAP Media</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <section class="gate" id="gate" style="background-image: url('https://placehold.co/1600x900/222/fff?text=Portraits+Cover');">
+  <section class="gate" id="gate" style="background-image: url('https://placehold.co/1600x900/222/fff?text=Church+Services+Cover');">
     <div class="gate-overlay">
       <h1>CHURCH SERVICES</h1>
       <p class="gate-sub">Lingadzi CCAP Media</p>
@@ -23,13 +23,36 @@
       <h1 class="logo">CHURCH SERVICES</h1>
       <p class="tagline">August 2026</p>
     </header>
-    <main class="gallery">
-      <div class="photo-card"><img src="https://placehold.co/600x400/222/fff?text=Photo+1" alt="Photo"></div>
-      <div class="photo-card"><img src="https://placehold.co/600x800/222/fff?text=Photo+2" alt="Photo"></div>
-      <div class="photo-card"><img src="https://placehold.co/600x400/222/fff?text=Photo+3" alt="Photo"></div>
-    </main>
+
+    <!-- Sub-folder tabs get built in here automatically -->
+    <nav class="category-nav" id="subfolder-nav"></nav>
+
+    <!-- Photos for the selected sub-folder get built in here automatically -->
+    <main class="gallery" id="gallery"></main>
+
     <footer class="site-footer"><p>&copy; 2026 Lingadzi CCAP Media. All rights reserved.</p></footer>
   </div>
+
   <script src="script.js"></script>
+  <script>
+    // ADD YOUR SUB-FOLDERS HERE. To add a new one, copy a block below and edit it.
+    renderAlbum([
+      {
+        name: "Adziwa",
+        photos: [
+          "photos/adziwa/photo1.jpg",
+          "photos/adziwa/photo2.jpg",
+          "photos/adziwa/photo3.jpg"
+        ]
+      },
+      {
+        name: "Guardians",
+        photos: [
+          "https://placehold.co/600x400/222/fff?text=Guardians+1",
+          "https://placehold.co/600x400/222/fff?text=Guardians+2"
+        ]
+      }
+    ]);
+  </script>
 </body>
 </html>

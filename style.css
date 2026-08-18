@@ -205,3 +205,27 @@ body {
 .hidden {
   display: none;
 }
+/* Download button on photo cards */
+.photo-card {
+  position: relative;
+}
+
+.download-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: 1px solid #fff;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.photo-card:hover .download-btn {
+  opacity: 1;
+}
