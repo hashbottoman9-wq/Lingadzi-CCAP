@@ -1,23 +1,7 @@
-// ---- Guest access gate ----
-const gate = document.getElementById('gate');
-const albumContent = document.getElementById('album-content');
-const enterBtn = document.getElementById('gate-enter');
-const emailInput = document.getElementById('gate-email');
+bash
 
-if (enterBtn) {
-  enterBtn.addEventListener('click', () => {
-    if (!emailInput.value || !emailInput.value.includes('@')) {
-      emailInput.style.borderColor = 'red';
-      return;
-    }
-    gate.style.display = 'none';
-    albumContent.classList.remove('hidden');
-  });
-}
-
+cat > /home/claude/script.js << 'EOF'
 // ---- Helper: build photo paths from just the IMG numbers ----
-// Example: buildPaths("CHURCH MEMBERS", [6439, 6442, 6452]) becomes
-// ["photos/CHURCH MEMBERS/IMG_6439.JPG", "photos/CHURCH MEMBERS/IMG_6442.JPG", ...]
 function buildPaths(folder, numbers, ext) {
   ext = ext || 'JPG';
   return numbers.map(n => `photos/${folder}/IMG_${n}.${ext}`);
@@ -56,6 +40,54 @@ function downloadWithWatermark(imgElement, filename) {
   };
 }
 
+// ---- Lightbox: click a photo to view it enlarged, with next/prev ----
+let currentPhotos = [];
+let currentIndex = 0;
+
+function openLightbox(photos, index) {
+  currentPhotos = photos;
+  currentIndex = index;
+  document.getElementById('lightbox-img').src = currentPhotos[currentIndex];
+  document.getElementById('lightbox').classList.add('active');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+
+function showNextPhoto() {
+  currentIndex = (currentIndex + 1) % currentPhotos.length;
+  document.getElementById('lightbox-img').src = currentPhotos[currentIndex];
+}
+
+function showPrevPhoto() {
+  currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+  document.getElementById('lightbox-img').src = currentPhotos[currentIndex];
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const closeBtn = document.getElementById('lightbox-close');
+  const nextBtn = document.getElementById('lightbox-next');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const lightbox = document.getElementById('lightbox');
+
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  if (nextBtn) nextBtn.addEventListener('click', showNextPhoto);
+  if (prevBtn) prevBtn.addEventListener('click', showPrevPhoto);
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox || !lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showNextPhoto();
+    if (e.key === 'ArrowLeft') showPrevPhoto();
+  });
+});
+
 // ---- Sub-folder tabs + gallery builder ----
 function renderAlbum(subfolders) {
   const tabNav = document.getElementById('subfolder-nav');
@@ -66,8 +98,10 @@ function renderAlbum(subfolders) {
       btn.classList.toggle('active', i === index);
     });
 
+    const photoList = subfolders[index].photos;
     gallery.innerHTML = '';
-    subfolders[index].photos.forEach((src, i) => {
+
+    photoList.forEach((src, i) => {
       const card = document.createElement('div');
       card.className = 'photo-card';
 
@@ -75,12 +109,14 @@ function renderAlbum(subfolders) {
       img.loading = 'lazy';
       img.src = src;
       img.alt = subfolders[index].name + ' photo ' + (i + 1);
+      img.addEventListener('click', () => openLightbox(photoList, i));
       card.appendChild(img);
 
       const btn = document.createElement('button');
       btn.className = 'download-btn';
       btn.textContent = 'Download';
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         downloadWithWatermark(img, `${subfolders[index].name}-${i + 1}.jpg`);
       });
       card.appendChild(btn);
@@ -99,3 +135,8 @@ function renderAlbum(subfolders) {
 
   showSubfolder(0);
 }
+EOF
+echo "done"
+Output
+
+done

@@ -3,25 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YOUTH — Lingadzi CCAP Media</title>
+<title>Youth — Lingadzi CCAP Media</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
 
   <div id="album-content">
     <header class="site-header">
       <a href="index.html" class="back-link">&larr; Back to Collections</a>
       <h1 class="logo">YOUTH</h1>
-      <p class="tagline">August 2026</p>
+      <p class="tagline">2026</p>
     </header>
-    <main class="gallery">
-      <div class="photo-card"><img src="https://placehold.co/600x400/222/fff?text=Photo+1" alt="Photo"></div>
-      <div class="photo-card"><img src="https://placehold.co/600x800/222/fff?text=Photo+2" alt="Photo"></div>
-      <div class="photo-card"><img src="https://placehold.co/600x400/222/fff?text=Photo+3" alt="Photo"></div>
-    </main>
+
+    <nav class="category-nav" id="subfolder-nav"></nav>
+    <main class="gallery" id="gallery"></main>
+
+    <div class="lightbox" id="lightbox">
+      <span class="lightbox-close" id="lightbox-close">&times;</span>
+      <span class="lightbox-prev" id="lightbox-prev">&#10094;</span>
+      <img id="lightbox-img" src="" alt="">
+      <span class="lightbox-next" id="lightbox-next">&#10095;</span>
+    </div>
+
     <footer class="site-footer"><p>&copy; 2026 Lingadzi CCAP Media. All rights reserved.</p></footer>
   </div>
+
   <script src="script.js"></script>
+  <script>
+    renderAlbum([
+      {
+        name: "All",
+        photos: [
+          "https://placehold.co/600x400/eee/222?text=Youth+Photo+1",
+          "https://placehold.co/600x800/eee/222?text=Youth+Photo+2",
+          "https://placehold.co/600x400/eee/222?text=Youth+Photo+3"
+        ]
+      }
+    ]);
+  </script>
 </body>
 </html>
