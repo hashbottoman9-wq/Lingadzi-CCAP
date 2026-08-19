@@ -1,39 +1,40 @@
-bash
-
-cat > /home/claude/script.js << 'EOF'
 // ---- Helper: build photo paths from just the IMG numbers ----
 function buildPaths(folder, numbers, ext) {
   ext = ext || 'JPG';
-  return numbers.map(n => `photos/${folder}/IMG_${n}.${ext}`);
+  var paths = [];
+  for (var i = 0; i < numbers.length; i++) {
+    paths.push('photos/' + folder + '/IMG_' + numbers[i] + '.' + ext);
+  }
+  return paths;
 }
 
 // ---- Watermarked download ----
 function downloadWithWatermark(imgElement, filename) {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
   canvas.width = imgElement.naturalWidth;
   canvas.height = imgElement.naturalHeight;
   ctx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
 
-  const logo = new Image();
+  var logo = new Image();
   logo.crossOrigin = "anonymous";
   logo.src = "logo.png";
 
-  logo.onload = () => {
-    const logoWidth = canvas.width * 0.15;
-    const logoHeight = (logo.height / logo.width) * logoWidth;
-    const padding = canvas.width * 0.02;
+  logo.onload = function () {
+    var logoWidth = canvas.width * 0.15;
+    var logoHeight = (logo.height / logo.width) * logoWidth;
+    var padding = canvas.width * 0.02;
     ctx.globalAlpha = 0.85;
     ctx.drawImage(logo, canvas.width - logoWidth - padding, canvas.height - logoHeight - padding, logoWidth, logoHeight);
     ctx.globalAlpha = 1;
-    const link = document.createElement('a');
+    var link = document.createElement('a');
     link.download = filename || 'lingadzi-ccap-media.jpg';
     link.href = canvas.toDataURL('image/jpeg', 0.92);
     link.click();
   };
 
-  logo.onerror = () => {
-    const link = document.createElement('a');
+  logo.onerror = function () {
+    var link = document.createElement('a');
     link.download = filename || 'lingadzi-ccap-media.jpg';
     link.href = canvas.toDataURL('image/jpeg', 0.92);
     link.click();
@@ -41,8 +42,8 @@ function downloadWithWatermark(imgElement, filename) {
 }
 
 // ---- Lightbox: click a photo to view it enlarged, with next/prev ----
-let currentPhotos = [];
-let currentIndex = 0;
+var currentPhotos = [];
+var currentIndex = 0;
 
 function openLightbox(photos, index) {
   currentPhotos = photos;
@@ -65,22 +66,22 @@ function showPrevPhoto() {
   document.getElementById('lightbox-img').src = currentPhotos[currentIndex];
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const closeBtn = document.getElementById('lightbox-close');
-  const nextBtn = document.getElementById('lightbox-next');
-  const prevBtn = document.getElementById('lightbox-prev');
-  const lightbox = document.getElementById('lightbox');
+document.addEventListener('DOMContentLoaded', function () {
+  var closeBtn = document.getElementById('lightbox-close');
+  var nextBtn = document.getElementById('lightbox-next');
+  var prevBtn = document.getElementById('lightbox-prev');
+  var lightbox = document.getElementById('lightbox');
 
   if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
   if (nextBtn) nextBtn.addEventListener('click', showNextPhoto);
   if (prevBtn) prevBtn.addEventListener('click', showPrevPhoto);
   if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
+    lightbox.addEventListener('click', function (e) {
       if (e.target === lightbox) closeLightbox();
     });
   }
 
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', function (e) {
     if (!lightbox || !lightbox.classList.contains('active')) return;
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowRight') showNextPhoto();
@@ -90,53 +91,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ---- Sub-folder tabs + gallery builder ----
 function renderAlbum(subfolders) {
-  const tabNav = document.getElementById('subfolder-nav');
-  const gallery = document.getElementById('gallery');
+  var tabNav = document.getElementById('subfolder-nav');
+  var gallery = document.getElementById('gallery');
 
   function showSubfolder(index) {
-    tabNav.querySelectorAll('.cat-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', i === index);
-    });
+    var allTabs = tabNav.querySelectorAll('.cat-btn');
+    for (var t = 0; t < allTabs.length; t++) {
+      if (t === index) {
+        allTabs[t].classList.add('active');
+      } else {
+        allTabs[t].classList.remove('active');
+      }
+    }
 
-    const photoList = subfolders[index].photos;
+    var photoList = subfolders[index].photos;
     gallery.innerHTML = '';
 
-    photoList.forEach((src, i) => {
-      const card = document.createElement('div');
-      card.className = 'photo-card';
+    for (var i = 0; i < photoList.length; i++) {
+      (function (src, i) {
+        var card = document.createElement('div');
+        card.className = 'photo-card';
 
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.src = src;
-      img.alt = subfolders[index].name + ' photo ' + (i + 1);
-      img.addEventListener('click', () => openLightbox(photoList, i));
-      card.appendChild(img);
+        var img = document.createElement('img');
+        img.loading = 'lazy';
+        img.src = src;
+        img.alt = subfolders[index].name + ' photo ' + (i + 1);
+        img.addEventListener('click', function () {
+          openLightbox(photoList, i);
+        });
+        card.appendChild(img);
 
-      const btn = document.createElement('button');
-      btn.className = 'download-btn';
-      btn.textContent = 'Download';
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        downloadWithWatermark(img, `${subfolders[index].name}-${i + 1}.jpg`);
-      });
-      card.appendChild(btn);
+        var btn = document.createElement('button');
+        btn.className = 'download-btn';
+        btn.textContent = 'Download';
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          downloadWithWatermark(img, subfolders[index].name + '-' + (i + 1) + '.jpg');
+        });
+        card.appendChild(btn);
 
-      gallery.appendChild(card);
-    });
+        gallery.appendChild(card);
+      })(photoList[i], i);
+    }
   }
 
-  subfolders.forEach((folder, index) => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.textContent = folder.name;
-    btn.addEventListener('click', () => showSubfolder(index));
-    tabNav.appendChild(btn);
-  });
+  for (var index = 0; index < subfolders.length; index++) {
+    (function (folder, index) {
+      var btn = document.createElement('button');
+      btn.className = 'cat-btn';
+      btn.textContent = folder.name;
+      btn.addEventListener('click', function () {
+        showSubfolder(index);
+      });
+      tabNav.appendChild(btn);
+    })(subfolders[index], index);
+  }
 
   showSubfolder(0);
 }
-EOF
-echo "done"
-Output
-
-done
