@@ -56,6 +56,16 @@ function closeLightbox() {
   document.getElementById('lightbox').classList.remove('active');
 }
 
+function downloadCurrentLightboxPhoto() {
+  var img = document.getElementById('lightbox-img');
+  var tempImg = new Image();
+  tempImg.crossOrigin = "anonymous";
+  tempImg.onload = function () {
+    downloadWithWatermark(tempImg, 'lingadzi-ccap-' + (currentIndex + 1) + '.jpg');
+  };
+  tempImg.src = img.src;
+}
+
 function showNextPhoto() {
   currentIndex = (currentIndex + 1) % currentPhotos.length;
   document.getElementById('lightbox-img').src = currentPhotos[currentIndex];
@@ -70,11 +80,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var closeBtn = document.getElementById('lightbox-close');
   var nextBtn = document.getElementById('lightbox-next');
   var prevBtn = document.getElementById('lightbox-prev');
+  var downloadBtn = document.getElementById('lightbox-download');
   var lightbox = document.getElementById('lightbox');
 
   if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
   if (nextBtn) nextBtn.addEventListener('click', showNextPhoto);
   if (prevBtn) prevBtn.addEventListener('click', showPrevPhoto);
+  if (downloadBtn) downloadBtn.addEventListener('click', downloadCurrentLightboxPhoto);
   if (lightbox) {
     lightbox.addEventListener('click', function (e) {
       if (e.target === lightbox) closeLightbox();

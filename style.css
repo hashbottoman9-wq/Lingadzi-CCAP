@@ -252,6 +252,27 @@ body {
   color: #ccc;
 }
 
+.lightbox-download {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.95);
+  color: #111;
+  border: none;
+  padding: 12px 32px;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.lightbox-download:hover {
+  background: #fff;
+}
+
 @media (max-width: 550px) {
   .logo {
     font-size: 1.6rem;
