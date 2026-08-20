@@ -3,6 +3,12 @@ Add-Type -AssemblyName System.Drawing
 $maxWidth = 1600
 $quality = 75
 $orientationId = 0x0112
+$logoPath = Join-Path (Get-Location) "logo.png"
+
+if (-Not (Test-Path $logoPath)) {
+    Write-Host "ERROR: logo.png not found in project root. Aborting."
+    exit
+}
 
 $folders = Get-ChildItem -Path "photos" -Directory
 foreach ($folder in $folders) {
@@ -37,8 +43,28 @@ foreach ($folder in $folders) {
         $graphics = [System.Drawing.Graphics]::FromImage($newImg)
         $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
         $graphics.DrawImage($img, 0, 0, $newWidth, $newHeight)
-        $graphics.Dispose()
         $img.Dispose()
+
+        # Stamp the logo permanently onto the photo (bottom-right corner)
+        $logo = [System.Drawing.Image]::FromFile($logoPath)
+        $logoWidth = [int]($newWidth * 0.15)
+        $logoHeight = [int]($logo.Height * ($logoWidth / $logo.Width))
+        $padding = [int]($newWidth * 0.02)
+
+        $colorMatrix = New-Object System.Drawing.Imaging.ColorMatrix
+        $colorMatrix.Matrix33 = 0.85
+        $imgAttributes = New-Object System.Drawing.Imaging.ImageAttributes
+        $imgAttributes.SetColorMatrix($colorMatrix, [System.Drawing.Imaging.ColorMatrixFlag]::Default, [System.Drawing.Imaging.ColorAdjustType]::Bitmap)
+
+        $destRect = New-Object System.Drawing.Rectangle(
+            ($newWidth - $logoWidth - $padding),
+            ($newHeight - $logoHeight - $padding),
+            $logoWidth,
+            $logoHeight
+        )
+        $graphics.DrawImage($logo, $destRect, 0, 0, $logo.Width, $logo.Height, [System.Drawing.GraphicsUnit]::Pixel, $imgAttributes)
+        $logo.Dispose()
+        $graphics.Dispose()
 
         $encoderParams = New-Object System.Drawing.Imaging.EncoderParameters(1)
         $encoderParams.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter([System.Drawing.Imaging.Encoder]::Quality, $quality)
