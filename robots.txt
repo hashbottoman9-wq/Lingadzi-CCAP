@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://astonishing-toffee-cfc91e.netlify.app/sitemap.xml
+Sitemap: https://lingadzi-media-team-mw.netlify.app/sitemap.xml
